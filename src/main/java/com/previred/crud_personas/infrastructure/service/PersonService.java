@@ -44,4 +44,39 @@ public class PersonService {
 
         return new ResponseEntity<>(responseData, HttpStatus.CREATED);
     }
+
+    @Transactional
+    public ResponseEntity<Object> updatePerson(Person person) {
+
+        responseData = new HashMap<>();
+        Optional<Person> personFromRepo = personRepository.findByRut(person.getRut());
+
+        if(personFromRepo.isEmpty()){
+            responseData.put("error", "user does not exist");
+            return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
+        }
+
+        person.setId(personFromRepo.get().getId());
+        personRepository.save(person);
+        responseData.put("person", person);
+        responseData.put("message", "person updated successfully");
+        return new ResponseEntity<>(responseData, HttpStatus.ACCEPTED);
+
+    }
+
+    @Transactional
+    public ResponseEntity<Object> delete(String rut) {
+
+        responseData = new HashMap<>();
+        Optional<Person> personFromRepo = personRepository.findByRut(rut);
+
+        if(personFromRepo.isEmpty()){
+            responseData.put("error", "user does not exist");
+            return new ResponseEntity<>(responseData, HttpStatus.NOT_FOUND);
+        }
+        personRepository.delete(personFromRepo.get());
+        responseData.put("message", "person deleted successfully");
+        return new ResponseEntity<>(responseData, HttpStatus.ACCEPTED);
+
+    }
 }

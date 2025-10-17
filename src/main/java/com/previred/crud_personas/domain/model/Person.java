@@ -22,7 +22,7 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank(message = "RUT is mandatory")
-    @Pattern(regexp = "\\d{7,8}-[\\dkK]", message = "Formato de RUT inválido")
+    @Pattern(regexp = "\\d{7,8}-[\\dkK]", message = "RUT format invalid")
     private String rut;
     @NotBlank(message = "Firstname is mandatory")
     private String firstname;

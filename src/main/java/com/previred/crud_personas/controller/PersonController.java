@@ -28,5 +28,14 @@ public class PersonController {
         return personService.createNewPerson(person);
     }
 
+    @PatchMapping("/person")
+    public ResponseEntity<Object> update(@RequestBody Person person){
+        return personService.updatePerson(person);
+    }
+
+    @DeleteMapping ("/person/{rut}")
+    public ResponseEntity<Object> delete(@PathVariable String rut){
+        return personService.delete(rut);
+    }
 
 }
