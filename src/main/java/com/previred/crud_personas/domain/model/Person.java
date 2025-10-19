@@ -23,6 +23,7 @@ public class Person {
     private Long id;
     @NotBlank(message = "RUT is mandatory")
     @Pattern(regexp = "\\d{7,8}-[\\dkK]", message = "RUT format invalid")
+    @Column(unique = true)
     private String rut;
     @NotBlank(message = "Firstname is mandatory")
     private String firstname;
