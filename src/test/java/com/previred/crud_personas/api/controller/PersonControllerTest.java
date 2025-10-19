@@ -18,7 +18,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDate;
 
@@ -41,12 +40,8 @@ class PersonControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        // ObjectMapper para LocalDate
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
-        // MockMvc standalone con manejador global de excepciones
         mockMvc = MockMvcBuilders.standaloneSetup(personController)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -54,7 +49,6 @@ class PersonControllerTest {
 
     @Test
     void save_shouldReturn200_whenPersonIsValid() throws Exception {
-        // Arrange
         PersonRequest request = new PersonRequest();
         request.setRut("12345678-9");
         request.setFirstname("John");
@@ -67,7 +61,6 @@ class PersonControllerTest {
 
         when(personService.createNewPerson(any(Person.class))).thenReturn(savedPerson);
 
-        // Act & Assert
         mockMvc.perform(post("/api/previred/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -80,11 +73,11 @@ class PersonControllerTest {
     @Test
     void save_shouldReturn400_whenInvalidFormat() throws Exception {
         PersonRequest request = new PersonRequest();
-        request.setRut("12333222-2"); // formato inválido
-        request.setFirstname("");      // @NotBlank viola
-        request.setLastname("");       // @NotBlank viola
-        request.setBirthdate(LocalDate.of(2030, 1, 1)); // @Past viola
-        request.setAddress(new Address("", "", ""));  // campos vacíos
+        request.setRut("12333222-2");
+        request.setFirstname("");
+        request.setLastname("");
+        request.setBirthdate(LocalDate.of(2030, 1, 1));
+        request.setAddress(new Address("", "", ""));
 
         mockMvc.perform(post("/api/previred/person")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +88,6 @@ class PersonControllerTest {
 
     @Test
     void save_shouldReturn409_whenPersonAlreadyExists() throws Exception {
-        // Arrange
         PersonRequest request = new PersonRequest();
         request.setRut("12345678-9");
         request.setFirstname("John");
@@ -106,7 +98,6 @@ class PersonControllerTest {
         when(personService.createNewPerson(any(Person.class)))
                 .thenThrow(new PersonAlreadyExistsException("Person already exists"));
 
-        // Act & Assert
         mockMvc.perform(post("/api/previred/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
