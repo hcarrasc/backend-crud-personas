@@ -10,6 +10,6 @@
 
 ${application.title} ${application.version}
 Powered by Spring Boot ${spring-boot.version}
-Developed by HC
+Developed by Hector Carrasco
 
 

@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: crud_personas_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: crud_personas
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crud_personas_app
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/crud_personas
+      DB_USER: user
+      DB_PASSWORD: password
+      CORS_ORIGINS: http://localhost:5173
+      SPRING_PROFILES_ACTIVE: dev
+    depends_on:
+      - db
+
+volumes:
+  db_data:
